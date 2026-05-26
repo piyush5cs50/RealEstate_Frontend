@@ -1,0 +1,9 @@
+body {
+  background-color: #f5f5f5;
+}
+
+.custom-title {
+  color: darkblue;
+  font-size: 40px;
+  font-weight: bold;
+}
