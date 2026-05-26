@@ -17,50 +17,117 @@ function AddProperty() {
     longitude: "",
   });
 
+  // Store Images
+  const [images, setImages] =
+    useState([]);
+
   // Handle Input Change
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
+  // Handle Image Change
+  const handleImageChange =
+    (e) => {
+
+      setImages(e.target.files);
+
+    };
+
   // Submit Form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit =
+    async (e) => {
 
-    try {
+      e.preventDefault();
 
-      // Get JWT token
-      const token = localStorage.getItem("token");
+      try {
 
-      const response = await API.post(
-        "/properties",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // JWT Token
+        const token =
+          localStorage.getItem("token");
+
+
+        // =====================
+        // Create FormData
+        // =====================
+
+        const propertyData =
+          new FormData();
+
+
+        // Add All Text Fields
+        for (let key in formData) {
+
+          propertyData.append(
+            key,
+            formData[key]
+          );
         }
-      );
 
-      alert(response.data.message);
 
-      console.log(response.data);
+        // Add Images
+        for (
+          let i = 0;
+          i < images.length;
+          i++
+        ) {
 
-    } catch (error) {
+          propertyData.append(
+            "images",
+            images[i]
+          );
+        }
 
-      console.log(error);
 
-      alert(
-        error.response?.data?.message ||
-        "Property upload failed"
-      );
+        // Send Request
+        const response =
+          await API.post(
 
-    }
-  };
+            "/properties",
+
+            propertyData,
+
+            {
+              headers: {
+
+                Authorization:
+                  `Bearer ${token}`,
+
+                "Content-Type":
+                  "multipart/form-data",
+              },
+            }
+          );
+
+
+        alert(
+          response.data.message
+        );
+
+        console.log(
+          response.data
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+
+          error.response?.data?.message ||
+
+          "Property upload failed"
+        );
+      }
+    };
 
   return (
+
     <div className="container mt-5 mb-5">
 
       <div className="row justify-content-center">
@@ -77,6 +144,7 @@ function AddProperty() {
 
               {/* Title */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Property Title
                 </label>
@@ -88,10 +156,13 @@ function AddProperty() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
+
 
               {/* Description */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Description
                 </label>
@@ -103,10 +174,13 @@ function AddProperty() {
                   onChange={handleChange}
                   required
                 ></textarea>
+
               </div>
+
 
               {/* Price */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Price
                 </label>
@@ -118,10 +192,13 @@ function AddProperty() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
+
 
               {/* City */}
               <div className="mb-3">
+
                 <label className="form-label">
                   City
                 </label>
@@ -133,10 +210,13 @@ function AddProperty() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
+
 
               {/* Address */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Address
                 </label>
@@ -148,10 +228,13 @@ function AddProperty() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
+
 
               {/* Property Type */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Property Type
                 </label>
@@ -161,6 +244,7 @@ function AddProperty() {
                   name="propertyType"
                   onChange={handleChange}
                 >
+
                   <option value="Apartment">
                     Apartment
                   </option>
@@ -178,10 +262,13 @@ function AddProperty() {
                   </option>
 
                 </select>
+
               </div>
+
 
               {/* Bedrooms */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Bedrooms
                 </label>
@@ -192,10 +279,13 @@ function AddProperty() {
                   name="bedrooms"
                   onChange={handleChange}
                 />
+
               </div>
+
 
               {/* Bathrooms */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Bathrooms
                 </label>
@@ -206,10 +296,13 @@ function AddProperty() {
                   name="bathrooms"
                   onChange={handleChange}
                 />
+
               </div>
 
-              {/* Virtual Tour */}
+
+              {/* Virtual Tour URL */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Virtual Tour URL
                 </label>
@@ -220,10 +313,13 @@ function AddProperty() {
                   name="virtualTourUrl"
                   onChange={handleChange}
                 />
+
               </div>
+
 
               {/* Latitude */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Latitude
                 </label>
@@ -235,10 +331,13 @@ function AddProperty() {
                   name="latitude"
                   onChange={handleChange}
                 />
+
               </div>
+
 
               {/* Longitude */}
               <div className="mb-3">
+
                 <label className="form-label">
                   Longitude
                 </label>
@@ -250,14 +349,42 @@ function AddProperty() {
                   name="longitude"
                   onChange={handleChange}
                 />
+
               </div>
 
-              {/* Submit Button */}
+
+              {/* IMAGE UPLOAD */}
+              <div className="mb-3">
+
+                <label className="form-label">
+                  Property Images
+                </label>
+
+                <input
+                  type="file"
+
+                  className="form-control"
+
+                  multiple
+
+                  accept="image/*"
+
+                  onChange={
+                    handleImageChange
+                  }
+                />
+
+              </div>
+
+
+              {/* Submit */}
               <button
                 type="submit"
                 className="btn btn-primary w-100"
               >
+
                 Add Property
+
               </button>
 
             </form>
